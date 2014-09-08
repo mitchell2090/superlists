@@ -21,13 +21,32 @@ class NewVisitorTest   ( UseBrowserInTest) :
         self.browser.get('http://localhost:8000')
         # She notices that the page title and header mention to-do lists.
         self.assertIn('To-Do', self.browser.title)
+        header_text = self.browser.find_element_by_tag_name('h1').text
+        self.assertIn('To-Do', header_text)
+
 
         # She is invited to enter a to-do item straight away.
-    
-    # She types "Steal peacock feathers"
+        inputbox = self.browser.find_element_by_id('id_new_item')
+        self.assertEqual(
+            inputbox.get_attribute('placeholder'),
+            'Enter a to-do item'
+            )
+            
 
-    # When she hits enter, the page updates and now the page    lists "1: But
-    # peacock feathers" as an item in a TO-Do list.
+        # She types "Go to zoo to pull feathers from peacock"
+        inputbox.send_keys('Go to zoo to pull feathers from peacock')
+
+        # When she hits enter, the page updates and now the page
+        # lists "1: "Go to zoo to pull feathers from peacock" as an
+        # item in a TO-Do list.  
+        inputbox.send_keys(Keys.Enter)
+
+        table= self.browser.find_eleent_by_id('id_list_table')
+        rows = table.find_elements_by_tag_name('tr')
+        self.assertTrue(
+            any(row.text == '1: Go to zoo to pull feathers from
+        peacock' for row in rows)
+        )
 
     # There is still a text box inviting her to add another item.  She
     # enters "Use peacock feathers to kill a fly".  (She's not a
