@@ -44,17 +44,25 @@ class NewVisitorTest   ( UseBrowserInTest) :
 
         table= self.browser.find_element_by_id('id_list_table')
         rows = table.find_elements_by_tag_name('tr')
-        self.assertTrue(
-            any(row.text == '1: Go to zoo to pull feathers from '
-                'peacock' for row in rows)
-            , msg='New to-do item did not appear in table' 
+        self.assertIn( '1: Go to zoo to pull feathers from peacock',
+                       [row.text for row in rows]
         )
 
-    # There is still a text box inviting her to add another item.  She
-    # enters "Use peacock feathers to kill a fly".  (She's not a
-    # fisherman.)
+        # There is still a text box inviting her to add another item.  She
+        # enters "Use peacock feathers to kill a fly".  (She's not a
+        # fisherman.)
+        new_item = 'Use peacock feathers to kill a fly'
+        inputbox = self.browser.find_element_by_id('id_new_item')
+        inputbox.send_keys(new_item)
 
-    # The page updates again and now shows both items on her list.
+        # The page updates again and now shows both items on her list.
+        inputbox.send_keys(Keys.ENTER)
+
+        table= self.browser.find_element_by_id('id_list_table')
+        rows = table.find_elements_by_tag_name('tr')
+        self.assertIn( '2: ' + new_item,
+                       [row.text for row in rows]
+        )
 
     # Edith wonders if the site will remember her. She sees that the site
     # has generated a unique URL for her:  There is explainatory text to
