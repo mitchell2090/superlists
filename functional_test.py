@@ -9,20 +9,21 @@ class UseBrowserInTest   (unittest.TestCase):
     def setUp(self) :
         self.browser = webdriver.Firefox()
         self.browser.implicitly_wait(3)
+
     def tearDown(self) :
-        self.browser.quit()
+        self.browser.close()
 
 
 class NewVisitorTest   ( UseBrowserInTest) :
     def test_can_start_a_list_and_retrieve_it_later(self) :
-    # Edith has heard about a to-do app.  She is obcessive: she has
-    # twenty-seven already, but can't let one go by without trying it. 
-
-    # She notices that the page title and header mention to-do lists.
+        # Edith has heard about a to-do app.  She is obcessive: she has
+        # twenty-seven already, but can't let one go by without trying it. 
+        self.browser.get('http://localhost:8000')
+        # She notices that the page title and header mention to-do lists.
         self.assertIn('To-Do', self.browser.title)
 
-    # She is invited to enter a to-do item straight away.
-
+        # She is invited to enter a to-do item straight away.
+    
     # She types "Steal peacock feathers"
 
     # When she hits enter, the page updates and now the page    lists "1: But
@@ -37,12 +38,12 @@ class NewVisitorTest   ( UseBrowserInTest) :
     # Edith wonders if the site will remember her. She sees that the site
     # has generated a unique URL for her:  There is explainatory text to
     # that effect.
-
+    
 
     # She visits the URL --- her list is there.
 
     # So she goes out drinking.
-
+        self.fail('finish the test!')    
 
 if __name__ == '__main__' :
     unittest.main(warnings='ignore')
