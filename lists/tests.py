@@ -3,7 +3,10 @@ from django.test import TestCase
 from django.http import HttpRequest
 from django.template.loader import render_to_string
 from lists.views import home_page
+from .models import Item
+import unittest
 
+@unittest.skip('omitting Browser tests')
 class HomePageTest(TestCase) :
 
     def test_root_url_resolves_to_home_page_view(self):
@@ -23,3 +26,20 @@ class HomePageTest(TestCase) :
 
         response = home_page(request)
         self.assertIn('A new list item', response.content.decode())
+
+
+
+class ItemModelTest (TestCase) :
+    def test_saving_and_retrieving_items(self):
+        texts = ['The first (ever) item', 'Item the second']
+        items=[0]*2
+        print(items)
+        for n in range(2) :
+            items[n] = Item()
+            items[n].text = texts[n]
+            items[n].save()
+
+        saved_items = Item.objects.all()
+        self.assertEqual(saved_items.count(), 2)
+        for n in range(2) :
+            self.assertEqual(saved_items[n].text, texts[n])
