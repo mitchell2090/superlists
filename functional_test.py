@@ -16,6 +16,13 @@ class UseBrowserInTest   (unittest.TestCase):
 
 
 class NewVisitorTest   ( UseBrowserInTest) :
+
+    def check_for_row_in_list_table(self, row_text) :
+        table = self.browser.find_element_by_id('id_list_table')
+        rows = table.find_elements_by_tag_name('tr')
+        self.assertIn(row_text, [row.text for row in rows])
+
+
     def test_can_start_a_list_and_retrieve_it_later(self) :
         # Edith has heard about a to-do app.  She is obcessive: she has
         # twenty-seven already, but can't let one go by without trying it. 
@@ -35,34 +42,26 @@ class NewVisitorTest   ( UseBrowserInTest) :
             
 
         # She types "Go to zoo to pull feathers from peacock"
-        inputbox.send_keys('Go to zoo to pull feathers from peacock')
+        first_item = 'Go to zoo to pull feathers from peacock'
+        inputbox.send_keys(first_item)
 
         # When she hits enter, the page updates and now the page
         # lists "1: "Go to zoo to pull feathers from peacock" as an
         # item in a TO-Do list.  
         inputbox.send_keys(Keys.ENTER)
-
-        table= self.browser.find_element_by_id('id_list_table')
-        rows = table.find_elements_by_tag_name('tr')
-        self.assertIn( '1: Go to zoo to pull feathers from peacock',
-                       [row.text for row in rows]
-        )
+        self.check_for_row_in_list_table('1: ' + first_item)
 
         # There is still a text box inviting her to add another item.  She
         # enters "Use peacock feathers to kill a fly".  (She's not a
         # fisherman.)
-        new_item = 'Use peacock feathers to kill a fly'
+        second_item = 'Use peacock feathers to kill a fly'
         inputbox = self.browser.find_element_by_id('id_new_item')
-        inputbox.send_keys(new_item)
+        inputbox.send_keys(second_item)
 
         # The page updates again and now shows both items on her list.
         inputbox.send_keys(Keys.ENTER)
-
-        table= self.browser.find_element_by_id('id_list_table')
-        rows = table.find_elements_by_tag_name('tr')
-        self.assertIn( '2: ' + new_item,
-                       [row.text for row in rows]
-        )
+        self.check_for_row_in_list_table('1: ' + first_item)
+        self.check_for_row_in_list_table('2: ' + second_item)
 
     # Edith wonders if the site will remember her. She sees that the site
     # has generated a unique URL for her:  There is explainatory text to
