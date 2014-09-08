@@ -6,7 +6,7 @@ from lists.views import home_page
 from .models import Item
 import unittest
 
-@unittest.skip('omitting Browser tests')
+# @unittest.skip('omitting Browser tests')
 class HomePageTest(TestCase) :
 
     def test_root_url_resolves_to_home_page_view(self):
@@ -20,13 +20,30 @@ class HomePageTest(TestCase) :
         self.assertEqual(response.content.decode(), expected_html)
 
     def test_home_page_can_save_a_POST_request(self):
+        text = 'A new list item' 
         request = HttpRequest()
         request.method = 'POST'
-        request.POST['item_text'] = 'A new list item'
+        request.POST['item_text'] = text
 
         response = home_page(request)
-        self.assertIn('A new list item', response.content.decode())
+        self.assertEqual(Item.objects.count(), 1)
 
+        new_item = Item.objects.first()
+        self.assertEqual(new_item.text, text)
+        
+        self.assertIn(text , response.content.decode())
+        self.assertEqual(
+            response.content.decode(),
+            render_to_string(
+                'home.html',
+                {'new_item_text' : text }
+            ),
+        )
+
+    def test_home_page_doesnt_save_empty_items(self) :
+        request = HttpRequest()
+        home_page(request)
+        self.assertEqual(Item.objects.count(), 0)
 
 
 class ItemModelTest (TestCase) :
