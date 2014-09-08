@@ -26,19 +26,12 @@ class HomePageTest(TestCase) :
         request.POST['item_text'] = text
 
         response = home_page(request)
-        self.assertEqual(Item.objects.count(), 1)
 
+        self.assertEqual(Item.objects.count(), 1)
         new_item = Item.objects.first()
         self.assertEqual(new_item.text, text)
-        
-        self.assertIn(text , response.content.decode())
-        self.assertEqual(
-            response.content.decode(),
-            render_to_string(
-                'home.html',
-                {'new_item_text' : text }
-            ),
-        )
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response['location'], '/')
 
     def test_home_page_doesnt_save_empty_items(self) :
         request = HttpRequest()
