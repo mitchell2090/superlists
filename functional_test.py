@@ -1,6 +1,7 @@
 #! /Library/Frameworks/Python.framework/Versions/3.4/bin/python3
 
 from selenium import webdriver
+from selenium.webdriver.common.keys import Keys
 import unittest
 
 
@@ -39,13 +40,14 @@ class NewVisitorTest   ( UseBrowserInTest) :
         # When she hits enter, the page updates and now the page
         # lists "1: "Go to zoo to pull feathers from peacock" as an
         # item in a TO-Do list.  
-        inputbox.send_keys(Keys.Enter)
+        inputbox.send_keys(Keys.ENTER)
 
-        table= self.browser.find_eleent_by_id('id_list_table')
+        table= self.browser.find_element_by_id('id_list_table')
         rows = table.find_elements_by_tag_name('tr')
         self.assertTrue(
-            any(row.text == '1: Go to zoo to pull feathers from
-        peacock' for row in rows)
+            any(row.text == '1: Go to zoo to pull feathers from '
+                'peacock' for row in rows)
+            , msg='New to-do item did not appear in table' 
         )
 
     # There is still a text box inviting her to add another item.  She
