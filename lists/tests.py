@@ -67,12 +67,10 @@ class HomePageTest(TestCase) :
 class ItemModelTest (TestCase) :
     def test_saving_and_retrieving_items(self):
         texts = ['The first (ever) item', 'Item the second']
-        items=[0]*2
-        print(items)
-        for n in range(2) :
-            items[n] = Item()
-            items[n].text = texts[n]
-            items[n].save()
+        for text in texts :
+            item = Item()
+            item.text = text
+            item.save()
 
         saved_items = Item.objects.all()
         self.assertEqual(saved_items.count(), 2)

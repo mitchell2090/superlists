@@ -15,5 +15,4 @@ def home_page(request) :
 
 def view_list(request) :
         items = Item.objects.all()
-        print('view_list(): ', items, file=sys.stderr)
         return render(request, 'list.html', {'items' : items})
