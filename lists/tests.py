@@ -8,7 +8,8 @@ import unittest
 import sys
 class ListViewTest (TestCase) :
     def test_uses_list_template(self):
-        response = self.client.get('/lists/the-only-list/')
+        list_ = List.objects.create()
+        response = self.client.get('/lists/%d/' % (list_.id,))
         self.assertTemplateUsed(response, 'list.html')
 
     def test_displays_all_items(self):
@@ -16,10 +17,22 @@ class ListViewTest (TestCase) :
         test_texts=[ 'first item', 'second item']
         for text in test_texts :
             Item.objects.create(text=text, list=list_ )
-    
-        response = self.client.get('/lists/the-only-list/')
+        print( '\n-------------------------\nCalling self.client.get(' + '/lists/{:d}/'.format(list_.id) + ')')
+        response = self.client.get('/lists/{:d}/'.format(list_.id))
+        print(repr(response))
         for text in test_texts :
             self.assertContains( response, text)
+
+    def test_displays_only_items_for_that_list(self) :
+        test_texts = ['first item', 'second item']
+        lists = {'correct_' : List.objects.create(), 'other_' : List.objects.create() }
+        for text in test_texts :
+            for k in lists :
+                Item.objects.create(text = k + text, list = lists[k])
+        response = self.client.get('/lists/%d/' % (lists['correct_'].id,))
+        for text in test_texts :
+            self.assertContains(response, 'correct_'+ text)
+        self.assertNotContains(response, 'other')
 
 
 # @unittest.skip('omitting Browser tests')
@@ -61,5 +74,6 @@ class NewListTest(TestCase) :
     def test_home_page_redirects_after_POST(self) :
         test_text = 'A new list item'
         response = self.client.post( '/lists/new', data = {'item_text' : test_text})
-        self.assertRedirects(response, '/lists/the-only-list/')
+        list_ = List.objects.first()
+        self.assertRedirects(response, '/lists/{:d}/'.format(list_.id))
 
