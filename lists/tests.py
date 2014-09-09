@@ -34,36 +34,6 @@ class HomePageTest(TestCase) :
         expected_html = render_to_string('home.html', {'new_text_item' : 'A new list item'})
         self.assertEqual(response.content.decode(), expected_html)
 
-    def test_home_page_can_save_a_POST_request(self):
-        text = 'A new list item' 
-        request = HttpRequest()
-        request.method = 'POST'
-        request.POST['item_text'] = text
-
-        response = home_page(request)
-
-        self.assertEqual(Item.objects.count(), 1)
-        new_item = Item.objects.first()
-        self.assertEqual(new_item.text, text)
-
-    def test_home_page_redirects_after_POST(self) :
-        test_text = 'A new list item'
-        request = HttpRequest()
-        request.method = 'POST'
-        request.POST['item_text'] = test_text
-
-        response = home_page(request)
-
-        self.assertEqual(response.status_code, 302)
-        self.assertEqual(response['location'], '/lists/the-only-list/')
-
-    def test_home_page_doesnt_save_empty_items(self) :
-        request = HttpRequest()
-        home_page(request)
-        self.assertEqual(Item.objects.count(), 0)
-
-
-
 class ItemModelTest (TestCase) :
     def test_saving_and_retrieving_items(self):
         texts = ['The first (ever) item', 'Item the second']
@@ -76,3 +46,20 @@ class ItemModelTest (TestCase) :
         self.assertEqual(saved_items.count(), 2)
         for n in range(2) :
             self.assertEqual(saved_items[n].text, texts[n])
+
+
+class NewListTest(TestCase) :
+
+    def test_home_page_can_save_a_POST_request(self):
+        test_text = 'A new list item' 
+        self.client.post('/lists/new', data = { 'item_text': test_text })
+        
+        self.assertEqual(Item.objects.count(), 1)
+        new_item = Item.objects.first()
+        self.assertEqual(new_item.text, test_text)
+
+    def test_home_page_redirects_after_POST(self) :
+        test_text = 'A new list item'
+        response = self.client.post( '/lists/new', data = {'item_text' : test_text})
+        self.assertRedirects(response, '/lists/the-only-list/')
+
