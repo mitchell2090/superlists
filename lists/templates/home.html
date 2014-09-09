@@ -3,19 +3,14 @@
 </head>
 
 <body>
-<h1>To-Do Damn it</h1>
+<h1>Start a new To-Do List</h1>
 
 <form method="POST">
    <input name="item_text" id="id_new_item" placeholder="Enter a to-do item"/>
    {% csrf_token %}
 </form>
 
-<table id='id_list_table'>
-  {% for item in items %}
-      <tr><td>{{ forloop.counter }}: {{ item.text }}</td></tr>
-  {% endfor %}
-</table>
 <hr>
 <address></address>
-<!-- hhmts start -->Last modified: Mon Sep  8 17:24:27 EDT 2014 <!-- hhmts end -->
+<!-- hhmts start -->Last modified: Mon Sep  8 23:22:09 EDT 2014 <!-- hhmts end -->
 </body> </html>

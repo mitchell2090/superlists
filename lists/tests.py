@@ -5,6 +5,21 @@ from django.template.loader import render_to_string
 from lists.views import home_page
 from .models import Item
 import unittest
+import sys
+class ListViewTest (TestCase) :
+    def test_uses_list_template(self):
+        response = self.client.get('/lists/the-only-list/')
+        self.assertTemplateUsed(response, 'list.html')
+
+    def test_displays_all_items(self):
+        test_texts=[ 'first item', 'second item']
+        for text in test_texts :
+            Item.objects.create(text=text)
+    
+        response = self.client.get('/lists/the-only-list/')
+        for text in test_texts :
+            self.assertContains( response, text)
+
 
 # @unittest.skip('omitting Browser tests')
 class HomePageTest(TestCase) :
@@ -40,23 +55,13 @@ class HomePageTest(TestCase) :
         response = home_page(request)
 
         self.assertEqual(response.status_code, 302)
-        self.assertEqual(response['location'], '/')
+        self.assertEqual(response['location'], '/lists/the-only-list/')
 
     def test_home_page_doesnt_save_empty_items(self) :
         request = HttpRequest()
         home_page(request)
         self.assertEqual(Item.objects.count(), 0)
 
-    def test_home_page_displays_all_list_items(self):
-        test_texts=[ 'first item', 'second item']
-        for text in test_texts :
-            Item.objects.create(text=text)
-    
-        request = HttpRequest()
-        response = home_page(request)
-
-        for text in test_texts :
-            self.assertIn( text, response.content.decode())
 
 
 class ItemModelTest (TestCase) :
