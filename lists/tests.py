@@ -3,7 +3,7 @@ from django.test import TestCase
 from django.http import HttpRequest
 from django.template.loader import render_to_string
 from lists.views import home_page
-from .models import Item
+from .models import Item, List
 import unittest
 import sys
 class ListViewTest (TestCase) :
@@ -12,9 +12,10 @@ class ListViewTest (TestCase) :
         self.assertTemplateUsed(response, 'list.html')
 
     def test_displays_all_items(self):
+        list_ = List.objects.create()
         test_texts=[ 'first item', 'second item']
         for text in test_texts :
-            Item.objects.create(text=text)
+            Item.objects.create(text=text, list=list_ )
     
         response = self.client.get('/lists/the-only-list/')
         for text in test_texts :
@@ -37,10 +38,9 @@ class HomePageTest(TestCase) :
 class ItemModelTest (TestCase) :
     def test_saving_and_retrieving_items(self):
         texts = ['The first (ever) item', 'Item the second']
+        list_ = List.objects.create()
         for text in texts :
-            item = Item()
-            item.text = text
-            item.save()
+            Item.objects.create(text = text, list = list_)
 
         saved_items = Item.objects.all()
         self.assertEqual(saved_items.count(), 2)
