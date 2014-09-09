@@ -45,6 +45,8 @@ class NewVisiterTest (LiveServerTestCase) :
         # lists "1: "Go to zoo to pull feathers from peacock" as an
         # item in a TO-Do list.  
         inputbox.send_keys(Keys.ENTER)
+        edith_list_url = self.browser.current_url
+        self.assertRegex(edith_list_url, r'/lists/.+')
         self.check_for_row_in_list_table('1: ' + first_item)
 
         # There is still a text box inviting her to add another item.  She
@@ -59,10 +61,36 @@ class NewVisiterTest (LiveServerTestCase) :
         self.check_for_row_in_list_table('1: ' + first_item)
         self.check_for_row_in_list_table('2: ' + second_item)
 
-    # Edith wonders if the site will remember her. She sees that the site
-    # has generated a unique URL for her:  There is explainatory text to
-    # that effect.
-    
+        # Now a new user, Francis, drags in.
+        ## We use a new browser session to make sure that no
+        ## information of Edith's is leaking into Francis's session.
+        self.browser.quit()
+        self.browser = webdriver.Firefox()
+
+        # Francis visits the site.  There is not sign of Edith's list.
+        self.browser.get(self.live_server_url)
+        page_text = self.browser.find_element_by_tag_name('body').text
+        self.assertNotIn('peacock', page_text)
+        self.assertNotIn('kill a fly', page_text)
+
+        #Francis starts a new list.
+        inputbox = self.browser.find_element_by_id('id_new_item')
+        inputbox.send_keys('Buy milk')
+        inputbox.send_keys(Keys.ENTER)
+
+        # Francis gets his own url.
+        francis_list_url = self.browser.current_url
+        self.assertRegex(francis_list_url, r'/lists/.+')
+        self.assertNotEqual(francis_list_url, edith_list_url)
+
+        # His item is still there; still no trace of Edith
+        page_text = self.browser.find_element_by_tag_name('body').text
+        self.assertNotIn('peacock', page_text)
+        self.assertIn('Buy milk', page_text)
+
+        # Edith wonders if the site will remember her. She sees that the site
+        # has generated a unique URL for her:  There is explainatory text to
+        # that effect.
 
     # She visits the URL --- her list is there.
 
