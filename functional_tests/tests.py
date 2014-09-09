@@ -1,32 +1,28 @@
-#! /Library/Frameworks/Python.framework/Versions/3.4/bin/python3
-
+from django.test import LiveServerTestCase
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
-import unittest
+# import unittest
 
 
 
-class UseBrowserInTest   (unittest.TestCase):
+class NewVisiterTest (LiveServerTestCase) :
     def setUp(self) :
         self.browser = webdriver.Firefox()
         self.browser.implicitly_wait(3)
 
     def tearDown(self) :
         self.browser.close()
-
-
-class NewVisitorTest   ( UseBrowserInTest) :
-
+#-----       
     def check_for_row_in_list_table(self, row_text) :
         table = self.browser.find_element_by_id('id_list_table')
         rows = table.find_elements_by_tag_name('tr')
         self.assertIn(row_text, [row.text for row in rows])
-
+#-----
 
     def test_can_start_a_list_and_retrieve_it_later(self) :
         # Edith has heard about a to-do app.  She is obcessive: she has
         # twenty-seven already, but can't let one go by without trying it. 
-        self.browser.get('http://localhost:8000')
+        self.browser.get(self.live_server_url)
         # She notices that the page title and header mention to-do lists.
         self.assertIn('To-Do', self.browser.title)
         header_text = self.browser.find_element_by_tag_name('h1').text
