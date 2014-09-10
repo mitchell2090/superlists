@@ -88,14 +88,25 @@ class NewVisiterTest (LiveServerTestCase) :
         self.assertNotIn('peacock', page_text)
         self.assertIn('Buy milk', page_text)
 
-        # Edith wonders if the site will remember her. She sees that the site
-        # has generated a unique URL for her:  There is explainatory text to
-        # that effect.
+    def test_layout_and_styling(self) :
+        # Edith goes to the home page.
+        self.browser.get(self.live_server_url)
+        self.browser.set_window_size(1024, 768)
 
-    # She visits the URL --- her list is there.
+        # the input box is centered.  Bully
+        inputbox = self.browser.find_element_by_id('id_new_item')
+        self.assertAlmostEqual(
+            inputbox.location['x'] + inputbox.size['width']/2,
+            512,
+            delta =5
+        )
 
-    # So she goes out drinking.
-        self.fail('finish the test!')    
-
-if __name__ == '__main__' :
-    unittest.main(warnings='ignore')
+        # she starts a new list and sees the input is nicely centered there too.
+        inputbox.send_keys('testing\n')
+        inputbox = self.browser.find_element_by_id('id_new_item')
+        self.assertAlmostEqual(
+            inputbox.location['x'] + inputbox.size['width']/2,
+            512,
+            delta =5
+        )
+        
