@@ -1,16 +1,9 @@
-<html> <head>
-<title>To-Do lists</title>
-</head>
+{% extends 'base.html' %}
 
-<body>
-<h1>Start a new To-Do List</h1>
+{% block title_text %}To-Do Lists{% endblock %}
 
-<form method="POST" action = '/lists/new'>
-   <input name="item_text" id="id_new_item" placeholder="Enter a to-do item"/>
-   {% csrf_token %}
-</form>
+{% block header_text %}Start your new To-Do List{% endblock %}
 
-<hr>
-<address></address>
-<!-- hhmts start -->Last modified: Tue Sep  9 10:25:04 EDT 2014 <!-- hhmts end -->
-</body> </html>
+{% block form_action %}/lists/new{% endblock %}
+
+
