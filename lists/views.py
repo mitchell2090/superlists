@@ -3,21 +3,28 @@ from django.shortcuts import redirect, render
 from  lists.models import Item, List
 import sys
 
+def entering_info (fctn, args=[], other=[]) :
+    print('\n\nEntering function "{:s}({})" --- {}'.format(fctn, args, other), file=sys.stderr)
+
 # Create your views here.
 
 def home_page(request) :
-#    print('enter home_page(request = {})'.format(request))
-    return render(request, 'home.html')
+#    entering_info('home_page', args=[request])
+    return(render(request, 'home.html'))
 
 def view_list(request, list_id) :
-#    print('enter view_list({}, list_id = {})'.format( request, list_id))
+#    entering_info('view_list', args=[request, list_id])
     list_= List.objects.get(id=list_id)
-    items = Item.objects.filter(list=list_)
-    return render(request, 'list.html', {'items' : items})
+    return render(request, 'list.html', {'list' : list_ })
 
 def new_list(request) :
-#   print('enter new_list(request = {})'.format( request, ))
+#    entering_info('new_list', args=[request])
     list_ = List.objects.create()
     Item.objects.create(text=request.POST['item_text'], list = list_)
-    return(redirect('/lists/{:d}/'.format(list_.id)))
+    return(redirect('/lists/{}/'.format(list_.id)))
 
+def add_item(request, list_id) :
+ #   entering_info('add_item', args=[request, list_id])
+    list_ = List.objects.get(id=list_id)
+    Item.objects.create(text=request.POST['item_text'], list = list_)
+    return(redirect('/lists/{}/'.format(list_id)))
