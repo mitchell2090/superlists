@@ -1,15 +1,14 @@
 from django.contrib.staticfiles.testing import StaticLiveServerTestCase
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
-# import unittest
+import unittest
 import sys
 
 
 class NewVisiterTest (StaticLiveServerTestCase) :
-    
+
     @classmethod
     def setUpClass(cls) :
-        print(sys.argv)
         for arg in sys.argv:
             if 'liveserver' in arg :
                 cls.server_url = 'http://' + arg.split('=')[1]
@@ -38,7 +37,7 @@ class NewVisiterTest (StaticLiveServerTestCase) :
     def test_can_start_a_list_and_retrieve_it_later(self) :
         # Edith has heard about a to-do app.  She is obcessive: she has
         # twenty-seven already, but can't let one go by without trying it. 
-        print("\n\nself.browser.get(" + self.server_url + ")\n\n")
+#        print("\n\nself.browser.get(" + self.server_url + ")\n\n")
         self.browser.get(self.server_url)
         # She notices that the page title and header mention to-do lists.
         self.assertIn('To-Do', self.browser.title)
@@ -126,4 +125,14 @@ class NewVisiterTest (StaticLiveServerTestCase) :
             512,
             delta =5
         )
-        
+
+    @unittest.skip("Skipping empty list test!")
+    def test_cannot_add_empty_list_items(self):
+        # Edith goes to the home page and accidentally tries to add an empty item.
+        # After she hits enter, she sees an error message saying it cann't be blank.
+        # She tries again, with a nonblank message, and it works.
+
+        # Perversely, she tries another blank item.
+        # She sees a similar error.
+        # and can fix it by entering non-blank text.
+        self.fail("Write me!")
