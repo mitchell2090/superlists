@@ -3,9 +3,9 @@ from django.test import TestCase
 from django.http import HttpRequest
 from django.template.loader import render_to_string
 from lists.views import home_page
-from ..models import Item, List
-import unittest
-import sys
+from lists.models import Item, List
+#import unittest
+#import sys
 
 # @unittest.skip
 class ListViewTest (TestCase) :
@@ -54,18 +54,6 @@ class HomePageTest(TestCase) :
 
         self.assertEqual(response.content.decode(), expected_html)
 
-# @unittest.skip
-class ItemModelTest (TestCase) :
-    def test_saving_and_retrieving_items(self):
-        texts = ['The first (ever) item', 'Item the second']
-        list_ = List.objects.create()
-        for text in texts :
-            Item.objects.create(text = text, list = list_)
-
-        saved_items = Item.objects.all()
-        self.assertEqual(saved_items.count(), 2)
-        for n in range(2) :
-            self.assertEqual(saved_items[n].text, texts[n])
 
 # @unittest.skip
 class NewListTest(TestCase) :
