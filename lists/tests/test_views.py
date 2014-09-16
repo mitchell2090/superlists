@@ -5,10 +5,10 @@ from django.utils.html import escape
 from django.template.loader import render_to_string
 from lists.views import home_page
 from lists.models import Item, List
-#import unittest
+# from  unittest import skip
 #import sys
 
-# @unittest.skip
+# @skip("Skipping ListViewTest")
 class ListViewTest (TestCase) :
     def test_uses_list_template(self):
         list_ = List.objects.create()
@@ -41,7 +41,7 @@ class ListViewTest (TestCase) :
 
         self.assertEqual(response.context['list'], lists['current_'])
 
-# @unittest.skip('omitting Browser tests')
+# @skip("Skipping HomePageTest")
 class HomePageTest(TestCase) :
 
     def test_root_url_resolves_to_home_page_view(self):
@@ -55,8 +55,6 @@ class HomePageTest(TestCase) :
 
         self.assertEqual(response.content.decode(), expected_html)
 
-
-# @unittest.skip
 class NewListTest(TestCase) :
 
     def test_home_page_can_save_a_POST_request(self):
@@ -80,10 +78,12 @@ class NewListTest(TestCase) :
         expected_error = escape("You can't have an empty list item")
         self.assertContains(response, expected_error)
 
+
     def test_invalid_list_items_arent_saved(self):
         self.client.post('lists/new', data={'item_text': ''})
         self.assertEqual(List.objects.count(), 0)
         self.assertEqual(Item.objects.count(), 0)
+
 
     def test_can_save_a_POST_request_to_an_existing_list(self):
         lists = { x : List.objects.create() for x in ['correct_', 'other_']}
