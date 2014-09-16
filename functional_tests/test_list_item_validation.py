@@ -1,9 +1,10 @@
-from .base import FunctionalTest
+#from .base import FunctionalTest
+from . import base
 from selenium.webdriver.common.keys import Keys
 from selenium import webdriver
 
 
-class ItemValidationTest(FunctionalTest) :        
+class ItemValidationTest(base.FunctionalTest) :        
 
     def test_cannot_add_empty_list_items(self):
         # Edith goes to the home page and accidentally tries to add an empty item.
@@ -23,6 +24,6 @@ class ItemValidationTest(FunctionalTest) :
         error = self.browser.find_element_by_css_selector('.has-error')
         self.assertEqual(error.text, "You can't have an empty list item")
         # and can fix it by entering non-blank text.
-        self.browser.find_element_by_id('id_new_item').send_keys(' make tea\n')
+        self.browser.find_element_by_id('id_new_item').send_keys('make tea\n')
         self.check_for_row_in_list_table('2: make tea')
 
