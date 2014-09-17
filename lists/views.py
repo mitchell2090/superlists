@@ -2,6 +2,7 @@
 from django.shortcuts import redirect, render
 from django.core.exceptions import ValidationError
 from  lists.models import Item, List
+from lists.forms import ItemForm
 import sys
 
 def entering_info (fctn, args=[], other=[]) :
@@ -11,7 +12,7 @@ def entering_info (fctn, args=[], other=[]) :
 
 def home_page(request) :
 #    entering_info('home_page', args=[request])
-    return(render(request, 'home.html'))
+    return(render(request, 'home.html', {'form' : ItemForm(), }))
 
 def view_list(request, list_id) :
     list_= List.objects.get(id=list_id)
